@@ -1,0 +1,138 @@
+\documentclass{article}
+%GEOSCIENCE RESEARCH PAPER
+
+% Useful packages
+%==========================================================
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage[utf8]{inputenc} %изменение кодировки текста 
+\usepackage{fancyhdr}
+\usepackage{blindtext}
+%==========================================================
+\title{{\bf \LARGE Orthotransfomation of Satellite Scenes}}
+\author{ \LARGE Zhornichenko Ilya Alekseevich}
+\date{\LARGE\today}
+
+\pagestyle{fancy}
+\rhead{\it MOSCOW 2021}
+\lhead{\it Orthotransformation of Satellite Scenes,Zhornichenko Ilya Alekseevich}
+
+%\rfoot{Page \thepage} adding page enumeration
+
+\begin{document}
+\maketitle
+\textbf{KEY WORDS:} \large Satellite, \large GIS, \large Orthotransormation, \large (DTM), \large (RPC), \large (DEM)
+
+\section*{\large\centering ABSTRACT} 
+Orthotransformation provides outstanding information including spatial information for different GIS or mapping applications.However, there is a large amount of deficiencies which leads to development of new methods to measure surfaces, distances and define certain geographic locations to obtain changes. The most prominent method to be used is differential rectification which is not always acceptable due to following problems, for example, dealing which larger scales of urban structures and e.g. However, there are decent number of methods that solve such kind of problem.
+The paper describes modern methods of transformation techniques and compares to existing ones using real data detected by satellites.
+\\
+\\
+
+\begin{multicols}{2}
+\section*{\bf\large\centering 1. INTRODUCTION} 
+Orthotransformation is the method which provides elimination of sensor tilts in the way of terrain terrain distortion. This information is necessary for GIS services in order to obtain data which could directly be used in determination of certain locations, measure distance, compute areas and get other useful information regarding certain location. However, most of such kind of images are taken by imaging satellites. As the resolution of images are being increased every time so that there is a persistent need in processing such images with new methods.As mentioned before the most complicated scenes are urban locations which are settled with high density of buildings which could not be easily reprojected.
+
+In this paper, methods of orthotransformation will be observed and discarded respectively.
+
+\section*{\bf\large\centering 2. SATELLITE PROCESSING}
+The first question is why should be orthocorrection be carried out whether it could be also distinguished in image and how will
+distortion of the processed image deteriorate quality of it. If we measure a positional properties of an image or combination of different time image the correction is needed.
+
+To proceed the orthotransormation the supervisor should possess the following data.
+\begin{itemize}
+\item A satellite image of the delivery formats (GeoTIFF and etc.)
+\item RPC \footnote[1]{Rational polynomial coefficients}data to the images e.g. snapshots
+\item Information about the relief in the form of (DEM) \footnote[2]{Digital terrain model}
+\end{itemize}
+The most acceptable way to process data for orthocorrection is the geometry transformation at the moment of image registry. Ordinary method is based on photogrammetric model which is respectively based on digital terrain model (e.g. DTM ). The satellite camera model in the form of generalized approximation functions (rational polynomials) can be considered one of the generalizing models used instead of strict models. It expresses relations within the objects and coordinates of the image using the coefficients. This method is called (RPC). For further processing the terrain file is needed in raster format (e.g.DEM \footnote[3]{Digital evaluation model}). The data about height and angles could be obtained as a result of terrain measurements through radars or from other RPC's.
+%===============================================================================================================================================================================================================================================================
+%\subsection{How to create Sections and Subsections}
+%\includegraphics[width=0.4\textwidth]{bp.jpg}
+%\caption{\it Pic.1 Test paper example}
+%\label{fig:image} 
+%\columnbreak
+\section*{\bf\large\centering 3. METHODS OF PROCESSING}
+There are two basic approaches to generating an orthotransformed images: forward projection and backward projection (Novak, 1992). In forward projection, each pixel in the source image is projected onto the orthotransformed images; the corresponding pixels in the orthotranformed images are then determined via the intersection of a ray from the perspective center of the source image through the image point with the three dimensional ground surface defined by the DSM \footnote[4]{Digital surface model}. In backward projection, each pixel in the orthotransformed images takes its pixel value from the source image using the collinearity condition and the object space coordinates X, Y, and Z of the corresponding DSM cell.
+In forward projection, even though the Exterior Orientation Parameters (EOP \footnote[5]{Exterior orientation parameters}) of the source image and DSM are available, the object point corresponding to each image pixel cannot be determined directly because three dimensional ground coordinates are calculated using two dimensional image coordinates and EOPs. For this reason, an iterative process is required to find the DSM point corresponding to a pixel in the source image, and two cases are possible (Figure 1). In the case in which the slope of the ray from the source image is larger than the slope of the ground surface, the convergence of the algorithm is guaranteed (Figure 1 (a)); however, in the case in which the slope of the ground surface is larger than the slope of the ray from the source image, this iterative process may not converge (Figure 1 (b)). Even though the first case (Figure 1 (a)) is more common, especially with satellite imagery, we must avoid any possible problems due to non-convergence. Another shortcoming of forward projection is that some missed pixels may appear in the resulting orthotransormed images.
+
+\includegraphics[width=\linewidth]{projection.png}
+
+\caption{ Figure (1) Ground point search method} \\
+
+Backward projection is commonly known as the indirect method or differential rectification. Unlike forward projection, backward projection goes from the object space to the image space using the object to image transformation. Therefore, the ground surface slope is not a serious issue, and furthermore, an iterative process for finding corresponding ground points is not required for frame camera imagery. In Figure 2, target orthotransormed images are generated through backward projection without an iterative ground point search or missed pixels in the resulting images. Backward projection, however, does require another iterative process for line scanner imagery because the EOPs of each scan line change continually during image capture. This issue is discussed in the section in which new proposed methods are introduced.
+%\caption{\label This frog was uploaded via the file-tree menu.}
+
+
+
+\begin{table}
+\begin{tabular}{l|r}
+Item & Quantity \\\hline
+Widgets & 42 \\
+Gadgets & 13
+\end{tabular}
+\caption{\label{tab:widgets}An example table.}
+\end{table}
+
+\subsection{How to add Comments and Track Changes}
+
+Comments can be added to your project by highlighting some text and clicking ``Add comment'' in the top right of the editor pane. To view existing comments, click on the Review menu in the toolbar above. To reply to a comment, click on the Reply button in the lower right corner of the comment. You can close the Review pane by clicking its name on the toolbar when you're done reviewing for the time being.
+
+Track changes are available on all our \href{https://www.overleaf.com/user/subscription/plans}{premium plans}, and can be toggled on or off using the option at the top of the Review pane. Track changes allow you to keep track of every change made to the document, along with the person making the change. 
+
+\subsection{How to add Lists}
+
+You can make lists with automatic numbering \dots
+
+\begin{enumerate}
+\item Like this,
+\item and like this.
+\end{enumerate}
+\dots or bullet points \dots
+\begin{itemize}
+\item Like this,
+\item and like this.
+\end{itemize}
+
+\subsection{How to write Mathematics}
+
+\LaTeX{} is great at typesetting mathematics. Let $X_1, X_2, \ldots, X_n$ be a sequence of independent and identically distributed random variables with $\text{E}[X_i] = \mu$ and $\text{Var}[X_i] = \sigma^2 < \infty$, and let
+\[S_n = \frac{X_1 + X_2 + \cdots + X_n}{n}
+      = \frac{1}{n}\sum_{i}^{n} X_i\]
+denote their mean. Then as $n$ approaches infinity, the random variables $\sqrt{n}(S_n - \mu)$ converge in distribution to a normal $\mathcal{N}(0, \sigma^2)$.
+
+
+\subsection{How to change the margins and paper size}
+
+Usually the template you're using will have the page margins and paper size set correctly for that use-case. For example, if you're using a journal article template provided by the journal publisher, that template will be formatted according to their requirements. In these cases, it's best not to alter the margins directly.
+
+If however you're using a more general template, such as this one, and would like to alter the margins, a common way to do so is via the geometry package. You can find the geometry package loaded in the preamble at the top of this example file, and if you'd like to learn more about how to adjust the settings, please visit this help article on \href{https://www.overleaf.com/learn/latex/page_size_and_margins}{page size and margins}.
+
+\subsection{How to change the document language and spell check settings}
+
+Overleaf supports many different languages, including multiple different languages within one document. 
+
+
+
+
+
+\section*{\bf\large\centering 7. REFERENCES}
+
+\end{multicols}
+\end{document}
+\begin{thebibliography}{14}
+\bibitem{ia}
+12DWQD
+\bibitem{ia2}
+QWDQWDQ
+
+
+%\end{thebibliography} }
+\end{thebibliography}
+
+
+
