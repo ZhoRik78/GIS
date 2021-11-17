@@ -1,0 +1,149 @@
+\documentclass{article}
+%GEOSCIENCE RESEARCH PAPER
+%Zhornichenko Ilya Alekseevich
+%GROUP: TMSS
+% Useful packages
+%==========================================================
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{amsmath} %adding math lib 
+\usepackage{graphicx} %graphics 
+\usepackage{multicol} %multi columns added
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage[utf8]{inputenc} %changing Unicode 
+\usepackage{fancyhdr} %underlining information
+\usepackage{blindtext} %adding white spaces
+\usepackage{biblatex} %Imports bib latex package
+%\usepackage[backend=biber,style=alphabetic,sorting=ynt]{biblatex}
+%==========================================================
+
+\title{{\bf \LARGE Orthotransfomation of Satellite Scenes}}
+\author{ \LARGE Zhornichenko Ilya Alekseevich}
+\date{\LARGE\today}
+
+\pagestyle{fancy}
+\rhead{\it MOSCOW 2021}
+\lhead{\it Orthotransformation of Satellite Scenes,Zhornichenko Ilya Alekseevich}
+%\rfoot{Page \thepage} adding page enumeration (not necessary)
+\begin{document}
+\maketitle
+\textbf{KEY WORDS:} \large Satellite, \large GIS, \large Orthotransormation, \large (DTM), \large (RPC), \large (DEM)
+\\
+%==================================================================================================
+\rule{\textwidth}{0.5pt}
+\begin{abstract} 
+Orthotransformation provides outstanding information including spatial information for different GIS or mapping applications.However, there is a large amount of deficiencies which leads to development of new methods to measure surfaces, distances and define certain geographic locations to obtain changes. The most prominent method to be used is differential rectification which is not always acceptable due to following problems, for example, dealing with larger scales of urban structures and etc. However, there are decent number of methods that solve such kind of problem.
+This paper describes modern methods of transformation techniques and compares to existing ones using real data detected by satellites.
+\end{abstract}
+\rule{\textwidth}{0.5pt}
+%==================================================================================================
+\begin{multicols}{2}
+\section*{\bf\large\centering 1. INTRODUCTION} 
+
+Orthotransformation is the method which provides elimination of sensor tilts in the way of terrain terrain distortion. This information is necessary for GIS services in order to obtain data which could directly be used in determination of certain locations, measure distance, compute areas and get other useful information regarding certain location. However, most of such kind of images are taken by imaging satellites. 
+
+As the resolution of images are being increased every time so that there is a persistent need in processing such images with new methods.As mentioned before the most complicated scenes are urban locations which are settled with high density of buildings which could not be easily reprojected.
+
+In this paper, methods of orthotransformation will be observed and discarded respectively.
+%==================================================================================================
+\section*{\bf\large\centering 2. SATELLITE PROCESSING}
+The first question is why should be orthocorrection be carried out whether it could be also distinguished in image and how will
+distortion of the processed image deteriorate quality of it. If we measure a positional properties of an image or combination of different time image the correction is needed.
+
+To proceed the orthotransormation the supervisor should possess the following data.
+\begin{itemize}
+\item A satellite image of the delivery formats (GeoTIFF and etc.)
+\item RPC \footnote[1]{Rational polynomial coefficients}data to the images e.g. snapshots
+\item Information about the relief in the form of (DEM) \footnote[2]{Digital terrain model}
+\end{itemize}
+The most acceptable way to process data for orthocorrection is the geometry transformation at the moment of image registry. Ordinary method is based on photogrammetric model which is respectively based on digital terrain model (e.g. DTM ). The satellite camera model in the form of generalized approximation functions (rational polynomials) can be considered one of the generalizing models used instead of strict models. It expresses relations within the objects and coordinates of the image using the coefficients. This method is called (RPC). For further processing the terrain file is needed in raster format (e.g.DEM \footnote[3]{Digital evaluation model}). The data about height and angles could be obtained as a result of terrain measurements through radars or from other RPC's.
+%===================================================================================================
+\section*{\bf\large\centering 3. METHODS OF PROCESSING}
+This paragraph describes methods of processing and generating othotransformed images: First of it is forward projection while the other uses backward method of reprojection. Considering the forward projection each pixel in source image is projected to orthotransformed image and the corresponding determined with intersections of from the center  through the image point with the three dimensional ground surface defined by the DSM \footnote[4]{Digital surface model}.
+ In backward projection, each pixel in the orthotransformed images takes its pixel value from the source image using the collinearity condition and the object space coordinates X, Y, and Z of the corresponding DSM cell.
+In forward projection, even though the Exterior Orientation Parameters (EOP \footnote[5]{Exterior orientation parameters}) of the source image and DSM are available, the object point corresponding to each image pixel cannot be determined directly because three dimensional ground coordinates are calculated using two dimensional image coordinates and EOPs. For this reason, an iterative process is required to find the DSM point corresponding to a pixel in the source image, and two cases are possible (Figure 1). In the case in which the slope of the ray from the source image is larger than the slope of the ground surface, the convergence of the algorithm is guaranteed (Figure 1 (a)); however, in the case in which the slope of the ground surface is larger than the slope of the ray from the source image, this iterative process may not converge (Figure 1 (b)). Even though the first case (Figure 1 (a)) is more common, especially with satellite imagery, we must avoid any possible problems due to non-convergence. Another shortcoming of forward projection is that some missed pixels may appear in the resulting orthotransormed images.[1]
+The picture of following methods are displayed below.
+
+\includegraphics[width=\linewidth]{photos/projection.png}
+
+    \caption{ \it {Figure (1)} Ground point search method}\\
+    
+Differential rectification differs forward projection in the way that backward projection goes from the object space to the image space using the object to image transformation[1]. However, the ground surface slope is not a serious issue, and furthermore, an iterative process for finding corresponding ground points is not required for frame camera imagery. In Figure 2, target orthotransormed images are generated through backward projection without an iterative ground point search or missed pixels in the resulting images. Backward projection, however, does require another iterative process for line scanner imagery because the EOPs of each scan line change continually during image capture. This issue is discussed in the section in which new proposed methods are introduced.
+%=======================================================================================================
+\section*{\bf\large\centering 4. PROPOSED METHOD}
+
+The main method to generate orthotransformed images is z-buffer algorithm. In order to visualize objects which are non-transparent.
+This problem is also know as Hidden Surface problem and can be solved using this algorithm. This image space method is based on pixel to be depicted on 2D. It compares surfaces depth of each pixel position on the plane surface.The main advantage of this method is that it could use large number of polygons to be executed and can be effectively applied either to transparent object or to an opaque ones.\\
+
+
+\includegraphics[scale = 0.25]{photos/z-buffer.png}
+
+    \caption{ \it {Figure (2)} Z-buffer method algorithm}\\
+
+But the are many conses which occur. Z-buffer algorithm falsifies visibility with narrow vertical structures and it is called the M-portion problem which can be solved by adding additional points to near the vertical structures and etc. 
+However, there are to more ways how the orthotransformed images could be precisely solved: (The following methods are described below).
+
+
+\begin{itemize}
+\item 1 Adaptive Radial Sweep Method
+\item 2 Spiral Sweep Method
+\end{itemize}
+
+This methods are dependent on several parameters which are the line displacement that is connected the center of perspective and observation angle.The top and bottom of vertical structures are being reprojected to the same place if the terrain is not distorted.
+However,in perspective projection upper and lower parts of structures
+are projected as two pixels. This bias is made in radial direction. This bias leads to so called occlusion on perspectives. This occlusion can be easily discovered by investigating the feasibility of biased angles. Generation of such projection is depicted below. \\
+
+\includegraphics[scale = 0.9]{photos/projection5.png}
+
+\caption{\it Figure (3) Orthoprojection using ABM \footnote[7]{Angle Based Method}}
+\\
+Nevertheless, The are some ways to remove this occlusion as a result of bias. If (DTM) is sorted is being processed as height values though results can be elaborated with z-buffer method. Orthophoto pixels are filed in the order of heights. This is depicted in  Figure(4). (DTM) cells are sorted in the order of heights and the backward projection is done exactly the same way 5-th cell in the picture has the same pixel as 2-nd one. In order to detect pixels of projected image 
+new proposal could be used: Using additional massive of the same dimension as the initial image has to count.
+
+\includegraphics[width=\linewidth]{photos/projection4.png}\\
+
+\caption{\it{Figure (4)} Ortoprojection with (DEM) sorted } \\
+
+
+The other way of moving 
+The angle based methodologies introduced by Habib et. al. (2005), after some modifications, can be used for occlusion detection when using imagery captured by line cameras. As mentioned previously, a line camera scene has multiple exposure stations; therefore, for such a scene, there are multiple nadir points. After identifying the exposure station for a given object point, we can use the angle based technique to check whether this point is visible. To evaluate the visibility of a given point, a search path, which is defined by the projection of the object point onto the ortho-photo plane and the corresponding nadir point, should be investigated. However instead of moving from the nadir point in an
+
+\section*{\bf\large\centering 5. COMPARISON}
+Comparing the height based ray tracing method proposed in this study is quite fast compared to the other effective true ortho-photo generation methods, such as the modified z-buffer method and the angle based ray tracing method.The processing performance of each method is show in Picture(5). We don't consider Modified Z-buffer \\
+
+\includegraphics[scale=0.4]{photos/results.png}\\
+\caption{\it Figure(5) Processing time of the methods testing}
+
+In addition, the quality of the output image is better than that of any other method, with the exception of the angle based ray tracing method. For this reason, the height based ray tracing method is recommended for true ortho- photo generation using scenes captured by line camera.
+\section*{\bf\large\centering 6. CONCLUSION}
+
+In conclusion, genearating correct orthophoto images is quite complex problem which demands time and computational resources
+
+The way the image could be processed depends on the landscape and structures such as buildings, thin vertical structures and density of such elements. The ordinary method to process simple non-uniform scale is to use z-buffer algorithm. However, proposed methods of adding reference points will solve the problem with complex landscapes. 
+
+\end{multicols}
+%=======================================================================================================
+\newpage
+\begin{thebibliography}{}
+\bibitem[1] \it Amhar, F., et al, “The generation of true orthophotos using a 3D building model in conjunction with a conventional DTM”, International Archive Photogrammetry and Remote Sensing, 1998, vol. 32, pp. 16-22.
+\bibitem[2] \it J. Poon, C. S. Fracer and C. Zhang, “Digital Surface Models from High Resolution Satellite Imagery,” Photo- grammetric Engineering & Remote Sensing, Vol. 73, No. 11, 2007, pp. 1225-1232.
+\bibitem[3] \it Mikhail, E., J. Bethel, “Introduction to Modern Photogrammetry”, WILEY, 2001, pp. 234-238.
+\bibitem[4] \it R. Nandakumar, T. P. Srinivasan, K. B. Gopala and P. K. Srivastava, “Data Products for Cartosat-1,” ISG Newslet- ter, Vol. 11, No. 2-3, 2005, pp. 18-24.
+\bibitem[5] \it Kim, T., D Shin, and Y Lee, “Development of a Robust Algorithm for Transformation of a 3D Object Point onto a 2D Image Point for Linear Pushbroom Imagery”, Photogrammetric Engineering and Remote Sensing, April. 2001, vol. 67, pp. 449-452.
+\bibitem[6] Bannari, A., Morin, D., Benie, G. and Bonn, F., 1995. A Theoretical Review of Different Mathematical Models of Geometric Corrections Applied to Remote Sensing Images. Remote Sensing Reviews, 13, pp.27-47.
+\bibitem[7]Novak, K., “Rectification of digital imagery”, Photogrammetric Engineering and Remote Sensing, Mar. 1992, vol.
+62, pp. 339-344.
+\bibitem[8] Toutin T., Carbonneau, Y. and Chenier, R., 2001. Block adjustment of Landsat-7 ETM+ images. Proc. Joint ISPRS Workshop “High Resolution Mapping from Space 2001”, Hannover, Germany, September 19-21.
+\bibitem[9] M. Crespi, F. Barbato, L. D. Vendictis, R. Onori, D. Polic, F. Volpe and X. Wang, “Orientation, Ortho-Rectification, DSM Extraction and 3D City Modeling by Cartosat-1 Stereo Imagery: First Results of a Test over Rome,” The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences, Goa, Vol. 36, 2006, pp. 1020-1025.
+
+\bibitem[10] Wang, Z. Z., 1990. Principles of Photogrammetry (with Remote Sensing). Publishing House of Surveying and Mapping, Beijing.
+\end{thebibliography}
+
+%\printbibliography[title={Whole bibliography}]
+
+\end{document}
+
+
+
+
+
