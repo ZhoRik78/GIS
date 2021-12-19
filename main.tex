@@ -6,6 +6,7 @@
 %==========================================================
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 \usepackage[english]{babel}
+\usepackage[table]{xcolor}
 \usepackage{amsmath} %adding math lib 
 \usepackage{graphicx} %graphics 
 \usepackage{multicol} %multi columns added
@@ -18,7 +19,7 @@
 %==========================================================
 
 \title{\bf \LARGE Orthotransformation of Satellite Scenes}
-\author{ \LARGE Zhornichenko Ilya Alekseevich \\ \\ PART I}
+\author{ \LARGE Zhornichenko Ilya Alekseevich \\ GROUP: TMSS\\ PART II: EXTENDED VERSION}
 \date{\LARGE\today}
 
 \pagestyle{fancy}
@@ -27,23 +28,22 @@
 %\rfoot{Page \thepage} adding page enumeration (not necessary)
 \begin{document}
 \maketitle
-\textbf{KEY WORDS:} \large Satellite, \large GIS, \large Orthotransormation, \large (DTM), \large (RPC), \large (DEM)
+\textbf{KEY WORDS:} \large Rectification, \large GIS, \large Algorithms, \large (DTM), \large (RPC), \large (DEM) , \large Polynomial model, \large Differential model, \large Projecting model
 %==================================================================================================
-
 
 \rule{\textwidth}{0.5pt}
 \begin{abstract} 
-Orthotransformation provides outstanding information including spatial information for different GIS or mapping applications.However, there is a large amount of deficiencies which leads to development of new methods to measure surfaces, distances and define certain geographic locations to obtain changes. The most prominent method to be used is differential rectification which is not always acceptable due to following problems, for example, dealing with larger scales of urban structures and etc. However, there are decent number of methods that solve such kind of problem.This paper describes modern methods of transformation techniques and compares to existing ones using real data detected by satellites.
+There are different methods that could be applied to generate orthotransformed images. In this paper we consider main problems which could occur while using this methods and build up a sustainable algorithm which is supposed to overcome such obstacles.This paper overlaps main approaches which are commonly be used in orthophoto rectification represented by polynomial, projecting and differential algorithms respectively. Considering polynomial and projecting algorithms we obtain analytical transformation between real image and rectifiable photo without considering the geometry and orientation of cameras whereas differential model approximates reality of the imaging process by means of collinearity equations and corrects for relief displacement. This paper compares methods which are represented above weighting up benefits and drawbacks in comparison with each other.
 \end{abstract}
 
 \rule{\textwidth}{0.5pt}
-%==================================================================================================
+%=============================================================================================
 \begin{multicols}{2}
 
 \section*{\bf\large\centering 1.INTRODUCTION} 
 Orthotransformation is the method which provides elimination of sensor tilts in the way of terrain terrain distortion. This information is necessary for GIS services in order to obtain data which could directly be used in determination of certain locations, measure distance, compute areas and get other useful information regarding certain location. However, most of such kind of images are taken by imaging satellites. 
 As the resolution of images are being increased every time so that there is a persistent need in processing such images with new methods.As mentioned before the most complicated scenes are urban locations which are settled with high density of buildings which could not be easily reprojected.
-In this paper, methods of orthotransformation will be observed and discarded respectively.
+In this paper, methods of orthotransformation will be observed and discarded respectively. Main methods of rectification and preprocessing are recreated below. 
 %==================================================================================================
 \section*{\bf\large\centering 2. SATELLITE PROCESSING}
 The first question is why should be orthocorrection be carried out whether it could be also distinguished in image and how will
@@ -52,7 +52,7 @@ distortion of the processed image deteriorate quality of it. If we measure a pos
 To proceed the orthotransormation the supervisor should possess the following data.
 \begin{itemize}
 \item A satellite image of the delivery formats (GeoTIFF and etc.)
-\item RPC \footnote[1]{Rational polynomial coefficients}data to the images e.g. snapshots
+\item RPC \footnote[1]{Rational polynomial coefficients}data to the images, snapshots
 \item Information about the relief in the form of (DEM) \footnote[2]{Digital terrain model}
 \end{itemize}
 The most acceptable way to process data for orthocorrection is the geometry transformation at the moment of image registry. Ordinary method is based on photogrammetric model which is respectively based on digital terrain model (e.g. DTM ). The satellite camera model in the form of generalized approximation functions (rational polynomials) can be considered one of the generalizing models used instead of strict models. It expresses relations within the objects and coordinates of the image using the coefficients. This method is called (RPC). For further processing the terrain file is needed in raster format (e.g.DEM \footnote[3]{Digital evaluation model}). The data about height and angles could be obtained as a result of terrain measurements through radars or from other RPC's.
@@ -106,18 +106,121 @@ new proposal could be used: Using additional massive of the same dimension as th
 
 The other way of moving 
 The angle based methodologies introduced by Habib et. al. (2005), after some modifications, can be used for occlusion detection when using imagery captured by line cameras. As mentioned previously, a line camera scene has multiple exposure stations; therefore, for such a scene, there are multiple nadir points. After identifying the exposure station for a given object point, we can use the angle based technique to check whether this point is visible. To evaluate the visibility of a given point, a search path, which is defined by the projection of the object point onto the orthophoto plane and the corresponding nadir point should be investigated. 
-\section*{\bf\large\centering 5. COMPARISON}
-Comparing the height based ray tracing method proposed in this study is quite fast compared to the other effective true ortho-photo generation methods, such as the modified z-buffer method and the angle based ray tracing method.The processing performance of each method is show in Picture(5). We don't consider Modified Z-buffer \\
+%====================================================================================
 
-\includegraphics[scale=0.4]{photos/results.png}\\
+\section*{\bf\large\centering 5. POLYNOMIAL RECTIFICATION}
+
+There are three main methods which are created and commonly used in image processing systems. And the first method which is going to be discussed is projecting transformation.The following method is held by polynomials between rectified image and original ones. This method is represented within following equations.
+
+\begin{equation}
+x = x'^{T}&A&y' = f_{x}(x', y')
+\end{equation}
+\[x = x'^{T}&B&y' = f_{y}(x', y')\] 
+where
+\begin{itemize}
+\item 1 {\bf {x}}, {\bf {y}} are coordinates of original image respectively
+\item 2 {\bf {x'}},{\bf {y'}} are coordinates of rectification
+\item 3 {\bf {A}}, {\bf {B}} are matrices of polynomials
+\end{itemize}
+This method overlaps distortions of the image relative to a dense set of control points. The order of the polynomial depends on the number of control points available. The more control information one has, the more accurate the result of the rectification will be[11]. This approach is completely independent of the geometry of the imaging sensor, so it can be used both for satellite images and aerial photographs. 
+\includegraphics[width=\linewidth]{photos/polynom.png.png}
+\caption{\it{Figure (5)} Projecting relationship between an object and the the image by 8 parameters}
+
+Due to the polynomial transform, the original image is shifted, rotated, scaled, and squeezed so that it fits best to the given reference points. This is the reason why the method is most often used for satellite images, whose geometry and distortions are sometimes difficult to model. Moreover, the relief displacement due to the topography of the Earth is relatively small compared to the flying height of the satellite and does not influence the result significantly.
+\\
+However, Polynomials are easy-to-use for rectification.This could be thoroughly inconvenient in direct rectification in preprocessed, transformed images because of incorrect relief displacement. Although, the
+main benefit of polynomial transform is that all distortions of image are correlated simultaneously with small residuals.
+
+The main points of polynomial rectification
+\begin{itemize}
+    \item  Model simplicity and computationally profitable
+    \item  Independencies of the sensor geometry and platform
+    \item  Accuracy is less than rigorous models in general
+    \item  For the inexperienced user a high-order polynomial may seem to provide a perfect fit at the reference points as the
+residuals are small. 
+    \item  Polynomial expressions are characterized by a great capability for absorption of accidental distortion
+\end{itemize}
+%==========================================================================
+\section*{\bf\large\centering 6. PROJECTING TRANSFORMATION}
+
+The projective transform describes the relationship between two planes. It is defined by eight parameters, which can be derived from four object points lying in a plane and their corresponding image coordinates. The following formulae describes the algorithm clearly(2).
+\begin{equation}
+    x = \frac{a_1x'+a_2y'+a_3z'}{c_1x'+c_2y'+1}' = f_{x}(x', y')
+\end{equation}
+    \[y = b_1x'+b_2y'+b_3\]
+Where x, y are coordinates of the original image; x’, y’ are coordinates of the rectification; and a1, a2, a3, b1, b2, b3, c1, c2 are projective parameter. The algorithm is represented in {\it{Figure(5)}}. 
+
+Where y is given in the flying direction and x represents the pixel in a scan line. Compared to (2), the elements of exterior and interior orientations are implicit in these parameters.
+
+\includegraphics[width=\linewidth]{photos/orthophoto.png}
+\caption{\it{Figure (6)} Orthophoto raster for DEM point}
+
+Nevertheless, this method has little practical significance for satellite scenes. The beneficial part of this algorithm is mentioned below:
+\begin{itemize}
+    \item This method is typically used to rectify aerial photographs of flat terrain or image of facades of buildings(due to earth curvature so it can be related to satellite scene)
+    \item Absence of interior and exterior orientation(not required for its implicitly)
+    \item This method has little practical significance for satellite sensors, but could be applied for airborne line scanners.
+\end{itemize}
+
+%==================================================================================
+
+\section*{\bf\large\centering 7. DIFFERENTIAL RECTIFICATION}
+ A digital elevation model (DEM) is needed to correct for relief displacements in the image. It is assumed that the DEM is stored in the same format as the digital image, Le., as a raster of digital values, which in this case expresses elevations instead of densities and are 16 bits long (compared to 8 bits of gray value). The DEM has to be related to the map projection of the resulting orthophoto[14].
+ 
+ \includegraphics[width=7cm, height=8cm]{photos/SAT.png}
+ 
+ \caption{\it{Figure (7)} Correction curvature of the Earth applying DR \footnote[8]{Differential Rectification} to Cartesian system(X,Y,Z)}
+ 
+This method every pixel of the orthophoto has to be processed separately, computation time is a major concern. It can be largely reduced by optimizing the image transformation. Multiplications must be avoided and substituted by simple additions. This is done by taking advantage of the incrementation of pixel 10-cations at the resulting image (orthophoto) {\it{Figure(7)}}.
+
+%=================================================================================
+
+\section*{\bf\large\centering 8. METHOD COMPARISON}
+Comparing the height based ray tracing method proposed in this study is quite fast compared to the other effective true orthophoto generation methods, such as the modified z-buffer method and the angle based ray tracing method.The processing performance of each method is show in Picture(5). We don't consider Modified Z-buffer \\
+\end{multicols}
+\
+\begin{center}
+\includegraphics[scale=0.6]{photos/results.png}\\
 \caption{\it Figure(5) Processing time of the methods testing}
+\end{center}
+As we obtained results the proposed method is the most easy-to-use method in front of others. Here are some performance stats in {\it{Table №1}}
+\begin{center}
 
-In addition, the quality of the output image is better than that of any other method, with the exception of the angle based ray tracing method. For this reason, the height based ray tracing method is recommended for true ortho- photo generation using scenes captured by line camera.
-\section*{\bf\large\centering 6. CONCLUSION}
+{\rowcolors{4}{green!80!yellow!50}{green!70!yellow!40}
+\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+\multicolumn{4}{|c|}{Methods frequently used} \\
+\hline
+Solution&Differential rect&Polynomial rect&Projective rect \\
+\hline
+p2&1.06e+00 & 1.05e+00 &2.62e+00\\
+p4&1.05e+00 &1.01e+00  & 2.71e+00 \\
+\hline
+\end{tabular}
+\begin{center}
+\caption{\it Table №1 Residuals in image with the test dataset( by Intermap Technologies)}
+\end{center}
+
+
+\end{center}
+
+\begin{multicols}{2}
+\begin{itemize}
+    \item Both the rational function models and the polynomial model (i.e., p2=p4=1 case) can reach the accuracy around 1 pixel.
+
+    \item Both the rational function models and the polynomial model (i.e., p2=p4=1 case) can reach the accuracy around 1 pixel.
+    \item In general, the cases with rational components are slightly better than the polynomial models.
+    \item The fitting accuracy of the cases with four-degree is very close to those with six-degree. It is understandable since
+the aerial photogrammetry data set may not involve high order distortions.
+\end{itemize}
+In addition, the quality of the output image is better than that of any other method, with the exception of the angle based ray tracing method. For this reason, the height based ray tracing method is recommended for true orthophoto generation using scenes captured by line camera.
+\section*{\bf\large\centering 9. CONCLUSION}
 
 In conclusion, genearating correct orthophoto images is quite complex problem which demands time and computational resources
 
-The way the image could be processed depends on the landscape and structures such as buildings, thin vertical structures and density of such elements. The ordinary method to process simple non-uniform scale is to use z-buffer algorithm. However, proposed methods of adding reference points will solve the problem with complex landscapes. 
+The way the image could be processed depends on the landscape and structures such as buildings, thin vertical structures and density of such elements. The ordinary method to process simple non-uniform scale is to use z-buffer algorithm. However, proposed methods of adding reference points will solve the problem with complex landscapes.  The comparison of three different approaches commonly used in image processing systems proved that a differential rectification that corrects both for relief displacements and camera distortions yields the best results, and should be used both for aerial and satellite images.
+This method not only generates orthophotos, but it actually finds the gray value of each DEM point and stores it at the same location. Thus, a digital surface model is created which contains elevation, density, and maybe other attributes (such as expo- sure, slope, temperature, etc.) at each position. These different layers of raster data are given in a georeferenced, orthogonal projection, and can easily be overlaid by vector data stored in the GIS.
+Moreover, both orthophoto and DEM can be created at the same time by digital image matching.
 
 \end{multicols}
 %=======================================================================================================
@@ -128,14 +231,26 @@ The way the image could be processed depends on the landscape and structures suc
 \bibitem[3] \it Mikhail, E., J. Bethel, “Introduction to Modern Photogrammetry”, WILEY, 2001, pp. 234-238.
 \bibitem[4] \it R. Nandakumar, T. P. Srinivasan, K. B. Gopala and P. K. Srivastava, “Data Products for Cartosat-1,” ISG Newslet- ter, Vol. 11, No. 2-3, 2005, pp. 18-24.
 \bibitem[5] \it Kim, T., D Shin, and Y Lee, “Development of a Robust Algorithm for Transformation of a 3D Object Point onto a 2D Image Point for Linear Pushbroom Imagery”, Photogrammetric Engineering and Remote Sensing, April. 2001, vol. 67, pp. 449-452.
-\bibitem[6] Bannari, A., Morin, D., Benie, G. and Bonn, F., 1995. A Theoretical Review of Different Mathematical Models of Geometric Corrections Applied to Remote Sensing Images. Remote Sensing Reviews, 13, pp.27-47.
-\bibitem[7]Novak, K., “Rectification of digital imagery”, Photogrammetric Engineering and Remote Sensing, Mar. 1992, vol.
+\bibitem[6] \it Bannari, A., Morin, D., Benie, G. and Bonn, F., 1995. A Theoretical Review of Different Mathematical Models of Geometric Corrections Applied to Remote Sensing Images. Remote Sensing Reviews, 13, pp.27-47.
+\bibitem[7] \it Novak, K., “Rectification of digital imagery”, Photogrammetric Engineering and Remote Sensing, Mar. 1992, vol.
 62, pp. 339-344.
-\bibitem[8] Toutin T., Carbonneau, Y. and Chenier, R., 2001. Block adjustment of Landsat-7 ETM+ images. Proc. Joint ISPRS Workshop “High Resolution Mapping from Space 2001”, Hannover, Germany, September 19-21.
-\bibitem[9] M. Crespi, F. Barbato, L. D. Vendictis, R. Onori, D. Polic, F. Volpe and X. Wang, “Orientation, Ortho-Rectification, DSM Extraction and 3D City Modeling by Cartosat-1 Stereo Imagery: First Results of a Test over Rome,” The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences, Goa, Vol. 36, 2006, pp. 1020-1025.
+\bibitem[8] \it Toutin T., Carbonneau, Y. and Chenier, R., 2001. Block adjustment of Landsat-7 ETM+ images. Proc. Joint ISPRS Workshop “High Resolution Mapping from Space 2001”, Hannover, Germany, September 19-21.
+\bibitem[9] \it M. Crespi, F. Barbato, L. D. Vendictis, R. Onori, D. Polic, F. Volpe and X. Wang, “Orientation, Ortho-Rectification, DSM Extraction and 3D City Modeling by Cartosat-1 Stereo Imagery: First Results of a Test over Rome,” The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences, Goa, Vol. 36, 2006, pp. 1020-1025.
 
-\bibitem[10] Wang, Z. Z., 1990. Principles of Photogrammetry (with Remote Sensing). Publishing House of Surveying and Mapping, Beijing.
+\bibitem[10] \it Wang, Z. Z., 1990. Principles of Photogrammetry (with Remote Sensing). Publishing House of Surveying and Mapping, Beijing.
+
+\bibitem[11] \it Mercer, B., Schnick, S, 1999.Comparison of DEMs from SATR-3i Interferometric SAR and Scanning Laser, ISPRS Commission III, Workshop, La Jolla, CA, November 9-11, 1999.
+
+\bibitem[12] \it Greve, C. W., 1992. Image processing on open systems, Photogrammetric Engineering and Remote Sensing, 58(1): 85- 89.
+
+\bibitem[13] \it OpenGIS Consortium, 1999. The OpenGIS Abstract Specification - Topic 7: The Earth Imagery Case, http://www.opengis.org/public/abstract/99-107.pdf
+
+\bibitem[14] \it Konecny, G., 1979. Methods and Possibilities for Digital Differential Rectification. Photogrammetric Engineering & Remote Sensing, Vol. 45, No.6, pp. 727-734.
+
+\bibitem[15] \it Hood, J., L. Ladner, and R. Champion, 1989. Image Processing Tech- niques for Digital Orthophotoquad Production. Photogrammetric En- gineering & Remote Sensing, Vol. 55, No.9, pp. 1323-1329.
+
 \end{thebibliography}
+
 
 %\printbibliography[title={Whole bibliography}]
 
