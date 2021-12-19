@@ -13,37 +13,36 @@
 \usepackage[utf8]{inputenc} %changing Unicode 
 \usepackage{fancyhdr} %underlining information
 \usepackage{blindtext} %adding white spaces
-\usepackage{biblatex} %Imports bib latex package
+%\usepackage{biblatex} %Imports bib latex package
 %\usepackage[backend=biber,style=alphabetic,sorting=ynt]{biblatex}
 %==========================================================
 
-\title{{\bf \LARGE Orthotransfomation of Satellite Scenes}}
-\author{ \LARGE Zhornichenko Ilya Alekseevich}
+\title{\bf \LARGE Orthotransformation of Satellite Scenes}
+\author{ \LARGE Zhornichenko Ilya Alekseevich \\ \\ PART I}
 \date{\LARGE\today}
 
 \pagestyle{fancy}
-\rhead{\it MOSCOW 2021}
-\lhead{\it Orthotransformation of Satellite Scenes,Zhornichenko Ilya Alekseevich}
+\rhead{\it PART II, MOSCOW 2021}
+\lhead{\it Orthotransformation of Satellite Scenes, Zhornichenko Ilya Alekseevich}
 %\rfoot{Page \thepage} adding page enumeration (not necessary)
 \begin{document}
 \maketitle
 \textbf{KEY WORDS:} \large Satellite, \large GIS, \large Orthotransormation, \large (DTM), \large (RPC), \large (DEM)
-\\
 %==================================================================================================
+
+
 \rule{\textwidth}{0.5pt}
 \begin{abstract} 
-Orthotransformation provides outstanding information including spatial information for different GIS or mapping applications.However, there is a large amount of deficiencies which leads to development of new methods to measure surfaces, distances and define certain geographic locations to obtain changes. The most prominent method to be used is differential rectification which is not always acceptable due to following problems, for example, dealing with larger scales of urban structures and etc. However, there are decent number of methods that solve such kind of problem.
-This paper describes modern methods of transformation techniques and compares to existing ones using real data detected by satellites.
+Orthotransformation provides outstanding information including spatial information for different GIS or mapping applications.However, there is a large amount of deficiencies which leads to development of new methods to measure surfaces, distances and define certain geographic locations to obtain changes. The most prominent method to be used is differential rectification which is not always acceptable due to following problems, for example, dealing with larger scales of urban structures and etc. However, there are decent number of methods that solve such kind of problem.This paper describes modern methods of transformation techniques and compares to existing ones using real data detected by satellites.
 \end{abstract}
+
 \rule{\textwidth}{0.5pt}
 %==================================================================================================
 \begin{multicols}{2}
-\section*{\bf\large\centering 1. INTRODUCTION} 
 
+\section*{\bf\large\centering 1.INTRODUCTION} 
 Orthotransformation is the method which provides elimination of sensor tilts in the way of terrain terrain distortion. This information is necessary for GIS services in order to obtain data which could directly be used in determination of certain locations, measure distance, compute areas and get other useful information regarding certain location. However, most of such kind of images are taken by imaging satellites. 
-
 As the resolution of images are being increased every time so that there is a persistent need in processing such images with new methods.As mentioned before the most complicated scenes are urban locations which are settled with high density of buildings which could not be easily reprojected.
-
 In this paper, methods of orthotransformation will be observed and discarded respectively.
 %==================================================================================================
 \section*{\bf\large\centering 2. SATELLITE PROCESSING}
@@ -95,7 +94,7 @@ are projected as two pixels. This bias is made in radial direction. This bias le
 
 \includegraphics[scale = 0.9]{photos/projection5.png}
 
-\caption{\it Figure (3) Orthoprojection using ABM \footnote[7]{Angle Based Method}}
+\caption{\it {Figure (3) Orthoprojection using ABM \footnote[7]{Angle Based Method}}}
 \\
 Nevertheless, The are some ways to remove this occlusion as a result of bias. If (DTM) is sorted is being processed as height values though results can be elaborated with z-buffer method. Orthophoto pixels are filed in the order of heights. This is depicted in  Figure(4). (DTM) cells are sorted in the order of heights and the backward projection is done exactly the same way 5-th cell in the picture has the same pixel as 2-nd one. In order to detect pixels of projected image 
 new proposal could be used: Using additional massive of the same dimension as the initial image has to count.
@@ -106,8 +105,7 @@ new proposal could be used: Using additional massive of the same dimension as th
 
 
 The other way of moving 
-The angle based methodologies introduced by Habib et. al. (2005), after some modifications, can be used for occlusion detection when using imagery captured by line cameras. As mentioned previously, a line camera scene has multiple exposure stations; therefore, for such a scene, there are multiple nadir points. After identifying the exposure station for a given object point, we can use the angle based technique to check whether this point is visible. To evaluate the visibility of a given point, a search path, which is defined by the projection of the object point onto the ortho-photo plane and the corresponding nadir point, should be investigated. However instead of moving from the nadir point in an
-
+The angle based methodologies introduced by Habib et. al. (2005), after some modifications, can be used for occlusion detection when using imagery captured by line cameras. As mentioned previously, a line camera scene has multiple exposure stations; therefore, for such a scene, there are multiple nadir points. After identifying the exposure station for a given object point, we can use the angle based technique to check whether this point is visible. To evaluate the visibility of a given point, a search path, which is defined by the projection of the object point onto the orthophoto plane and the corresponding nadir point should be investigated. 
 \section*{\bf\large\centering 5. COMPARISON}
 Comparing the height based ray tracing method proposed in this study is quite fast compared to the other effective true ortho-photo generation methods, such as the modified z-buffer method and the angle based ray tracing method.The processing performance of each method is show in Picture(5). We don't consider Modified Z-buffer \\
 
